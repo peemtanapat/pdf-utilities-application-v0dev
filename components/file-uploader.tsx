@@ -30,15 +30,19 @@ function SortableItem({ file, index }) {
   const { removeFile } = usePDFStore()
 
   return (
-    <Card ref={setNodeRef} style={style} className="p-4 flex items-center justify-between">
-      <div className="flex items-center space-x-3">
+    <Card
+      ref={setNodeRef}
+      style={style}
+      className="p-4 flex items-center justify-between w-full max-w-full overflow-hidden"
+    >
+      <div className="flex items-center space-x-3 flex-1 min-w-0">
         <div {...attributes} {...listeners} className="cursor-grab">
           <ArrowUpDownIcon className="h-5 w-5 text-muted-foreground" />
         </div>
         <FileIcon className="h-8 w-8 text-primary" />
         <div className="truncate">
           <p
-            className="font-medium truncate max-w-[180px] overflow-hidden text-ellipsis whitespace-nowrap"
+            className="font-medium truncate w-full max-w-full overflow-hidden text-ellipsis whitespace-nowrap"
             title={file.name}
           >
             {file.name}
@@ -158,7 +162,7 @@ export function FileUploader() {
             modifiers={[restrictToVerticalAxis]}
           >
             <SortableContext items={files.map((_, i) => i)} strategy={verticalListSortingStrategy}>
-              <div className="grid gap-4">
+              <div className="grid gap-4 w-full max-w-3xl mx-auto">
                 {files.map((file, index) => (
                   <SortableItem key={index} file={file} index={index} />
                 ))}

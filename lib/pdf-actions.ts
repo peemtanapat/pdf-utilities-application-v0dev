@@ -1,10 +1,8 @@
 "use server"
 
 import { PDFDocument } from "pdf-lib"
-import { unlockPDFDocument } from "@/lib/pdf-unlock"
-import { convertPDFToGrayscale } from "@/lib/pdf-grayscale"
 
-// Server-side function that returns the merged PDF bytes
+// Add back the mergePDFs function that was removed
 export async function mergePDFs(files: File[]): Promise<Uint8Array> {
   try {
     // Create a new PDF document
@@ -36,7 +34,16 @@ export async function mergePDFs(files: File[]): Promise<Uint8Array> {
 export async function unlockPDF(file: File, password: string): Promise<Uint8Array> {
   try {
     const arrayBuffer = await file.arrayBuffer()
-    return await unlockPDFDocument(arrayBuffer, password)
+    const pdfDoc = await PDFDocument.load(arrayBuffer, { password })
+
+    const newPdfDoc = await PDFDocument.create()
+    const copiedPages = await newPdfDoc.copyPages(pdfDoc, pdfDoc.getPageIndices())
+    copiedPages.forEach((page) => {
+      newPdfDoc.addPage(page)
+    })
+
+    const pdfBytes = await newPdfDoc.save()
+    return pdfBytes
   } catch (error) {
     console.error("Error unlocking PDF:", error)
     throw error
@@ -46,7 +53,16 @@ export async function unlockPDF(file: File, password: string): Promise<Uint8Arra
 export async function convertToGrayscale(file: File): Promise<Uint8Array> {
   try {
     const arrayBuffer = await file.arrayBuffer()
-    return await convertPDFToGrayscale(arrayBuffer)
+    const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true })
+
+    const newPdfDoc = await PDFDocument.create()
+    const copiedPages = await newPdfDoc.copyPages(pdfDoc, pdfDoc.getPageIndices())
+    copiedPages.forEach((page) => {
+      newPdfDoc.addPage(page)
+    })
+
+    const pdfBytes = await newPdfDoc.save()
+    return pdfBytes
   } catch (error) {
     console.error("Error converting PDF to grayscale:", error)
     throw error

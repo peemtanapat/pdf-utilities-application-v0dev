@@ -26,11 +26,43 @@ export function MergePDFButton() {
     setIsProcessing(true)
 
     try {
-      // Get the merged PDF bytes from the server
-      const pdfBytes = await mergePDFs(files)
+      // Check total file size
+      const totalSize = files.reduce((sum, file) => sum + file.size, 0)
 
-      // Download the file on the client side
-      downloadFile(pdfBytes, "merged.pdf")
+      if (totalSize < 1024 * 1024) {
+        // For smaller files (under 1MB), use the direct approach
+        const pdfBytes = await mergePDFs(files)
+        downloadFile(pdfBytes, "merged.pdf")
+      } else {
+        // For larger files, use the API route approach
+        const formData = new FormData()
+        files.forEach((file, index) => {
+          formData.append(`file-${index}`, file)
+        })
+
+        // Upload files
+        const uploadResponse = await fetch("/api/merge", {
+          method: "POST",
+          body: formData,
+        })
+
+        if (!uploadResponse.ok) {
+          throw new Error("Failed to upload files")
+        }
+
+        const { id } = await uploadResponse.json()
+
+        // Download the merged PDF
+        const mergeUrl = `/api/merge?id=${id}`
+
+        // Create a download link and trigger the download
+        const a = document.createElement("a")
+        a.href = mergeUrl
+        a.download = "merged.pdf"
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+      }
 
       toast({
         title: "Success",
