@@ -5,8 +5,8 @@ import { Toaster } from "@/components/ui/toaster"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "PDF Utilities",
-  description: "A web application for PDF operations like merging, unlocking, and converting to grayscale",
+  title: "PDF Merger",
+  description: "A web application for merging multiple PDF files into a single document",
     generator: 'v0.dev'
 }
 
