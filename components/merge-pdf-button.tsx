@@ -26,15 +26,16 @@ export function MergePDFButton() {
     setIsProcessing(true)
 
     try {
-      // Check total file size
+      // Check total file size - increased to 100MB to match the new server limit
       const totalSize = files.reduce((sum, file) => sum + file.size, 0)
+      const SERVER_SIZE_LIMIT = 100 * 1024 * 1024 // 100MB in bytes
 
-      if (totalSize < 1024 * 1024) {
-        // For smaller files (under 1MB), use the direct approach
+      if (totalSize < SERVER_SIZE_LIMIT) {
+        // For files under 100MB, use the direct approach
         const pdfBytes = await mergePDFs(files)
         downloadFile(pdfBytes, "merged.pdf")
       } else {
-        // For larger files, use the API route approach
+        // For extremely large files (over 100MB), use the API route approach
         const formData = new FormData()
         files.forEach((file, index) => {
           formData.append(`file-${index}`, file)

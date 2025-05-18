@@ -17,6 +17,7 @@ import {
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
+import { MergePDFButton } from "@/components/merge-pdf-button"
 
 // Sortable item component for drag and drop
 function SortableItem({ file, index }) {
@@ -149,26 +150,33 @@ export function FileUploader() {
       )}
 
       {files.length > 0 && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium">Uploaded Files ({files.length})</h3>
-            <p className="text-sm text-muted-foreground">Drag to reorder files</p>
+        <div className="space-y-6">
+          {/* Merge button moved above the file list */}
+          <div className="flex justify-center">
+            <MergePDFButton />
           </div>
 
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-            modifiers={[restrictToVerticalAxis]}
-          >
-            <SortableContext items={files.map((_, i) => i)} strategy={verticalListSortingStrategy}>
-              <div className="grid gap-4 w-full max-w-3xl mx-auto">
-                {files.map((file, index) => (
-                  <SortableItem key={index} file={file} index={index} />
-                ))}
-              </div>
-            </SortableContext>
-          </DndContext>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-medium">Uploaded Files ({files.length})</h3>
+              <p className="text-sm text-muted-foreground">Drag to reorder files</p>
+            </div>
+
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+              modifiers={[restrictToVerticalAxis]}
+            >
+              <SortableContext items={files.map((_, i) => i)} strategy={verticalListSortingStrategy}>
+                <div className="grid gap-4 w-full max-w-3xl mx-auto">
+                  {files.map((file, index) => (
+                    <SortableItem key={index} file={file} index={index} />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
+          </div>
         </div>
       )}
     </div>

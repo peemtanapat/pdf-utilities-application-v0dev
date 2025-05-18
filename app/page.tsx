@@ -1,5 +1,4 @@
 import { FileUploader } from "@/components/file-uploader"
-import { MergePDFButton } from "@/components/merge-pdf-button"
 
 export default function Home() {
   return (
@@ -14,10 +13,6 @@ export default function Home() {
       <div className="mt-10 space-y-8">
         <div className="p-6 border rounded-md">
           <FileUploader />
-        </div>
-
-        <div className="flex justify-center">
-          <MergePDFButton />
         </div>
       </div>
     </main>
